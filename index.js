@@ -173,16 +173,24 @@ app.get("/comment", (req, res) => {
             <textarea name="context">
             </textarea>
             <input type="submit">
-            
         </form>
-        <script>
-
-        </script>
     `)
 });
 
 app.post("/comment", (req, res) => {
+    pool.getConnection(function(err, connection){
 
+        let query = `
+            INSERT INTO comments (account, context)
+            VALUES ("${req.signedCookies.account}", "${req.body.context}")
+        `;
+
+        connection.query(query, function (error) {
+            connection.release();
+
+            res.redirect("/");
+        })
+    })
 })
 
 app.listen(3000, (err) => {
