@@ -156,7 +156,7 @@ app.post('/signIn', (req, res)=>{
                 return;
             }
 
-            res.cookie("account", req.body.cookie, {signed: true})
+            res.cookie("account", req.body.account, {signed: true})
                 .redirect("/");
         })
     })
