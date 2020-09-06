@@ -61,12 +61,12 @@ app.get('/', (req, res) => {
                 body += `
                     <hr>
                     <h4>By <strong>${results[i].account}</strong></h4>
-                    <p>${results[i].text}</p>
+                    <p>${results[i].context}</p>
                     `
             }
 
             body += `<button id="signOut">Sign out</button>`;
-            body += `<button id="comment">Comment</button>`;
+            body += `<button id="comment">Add comment</button>`;
 
             body += `
                 <script>
