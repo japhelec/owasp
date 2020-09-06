@@ -39,28 +39,49 @@ app.get('/', (req, res) => {
         return;
     } 
 
-    let body;
+    // dashboard
+    pool.getConnection(function(err, connection){
+        let query = `
+            SELECT * FROM comments
+        `;
 
-    body = `
-        <h1>Hello, ${req.signedCookies.account}!</h1>
-        <br><br>
-    `;
+        connection.query(query, function (error, results) {
+            connection.release();
 
-    body += `<button id="signOut">Sign out</button>`;
-    body += `<button id="comment">Comment</button>`;
+            let body;
 
-    body += `
-        <script>
-            document.getElementById("signOut").onclick = function () {
-                location.href = "/signOut";
-            };
-            document.getElementById("comment").onclick = function () {
-                location.href = "/comment";
-            };
-        </script>  
-    `;
+            body = `
+                <h1>Hello, ${req.signedCookies.account}!</h1>
+                <br><br>
+            `;
 
-    res.send(body);
+            body += `<h2>Comments</h2><br>`
+
+            for (let i=0;i<results.length;i++){
+                body += `
+                    <hr>
+                    <h4>By <strong>${results[i].account}</strong></h4>
+                    <p>${results[i].text}</p>
+                    `
+            }
+
+            body += `<button id="signOut">Sign out</button>`;
+            body += `<button id="comment">Comment</button>`;
+
+            body += `
+                <script>
+                    document.getElementById("signOut").onclick = function () {
+                        location.href = "/signOut";
+                    };
+                    document.getElementById("comment").onclick = function () {
+                        location.href = "/comment";
+                    };
+                </script>  
+            `;
+
+            res.send(body);
+        })
+    })
 });
 
 app.get('/register', (req, res) => {
@@ -142,8 +163,27 @@ app.post('/signIn', (req, res)=>{
 })
 
 app.get("/signOut", (req, res) => {
-    res.clearCookie("account");
+    res.clearCookie("account").redirect("/");
 });
+
+app.get("/comment", (req, res) => {
+    res.send(`
+        <h1>Put some comments</h1>
+        <form action="/comment" method="POST">
+            <textarea name="context">
+            </textarea>
+            <input type="submit">
+            
+        </form>
+        <script>
+
+        </script>
+    `)
+});
+
+app.post("/comment", (req, res) => {
+
+})
 
 app.listen(3000, (err) => {
     console.log('start successfully')
