@@ -196,3 +196,7 @@ app.post("/comment", (req, res) => {
 app.listen(3000, (err) => {
     console.log('start successfully')
 })
+
+
+// demo xss: store xml ajax, note cross origin policy, e.g. 巴哈姆特
+// demo sql: 
